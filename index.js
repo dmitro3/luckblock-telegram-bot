@@ -26,6 +26,11 @@ const fetchMarketData = (token) => {
         .then((data) => data.json());
 }
 
+const fetchTokenData = (token) => {
+    return fetch(`https://dapp.herokuapp.com/token-audit?contract=${token}`)
+        .then((data) => data.json());
+}
+
 const triggerAudit = (token) => {
     return fetch(`https://api.miyamotoproject.org/audit/${token}`)
         .then((data) => data.json());
@@ -43,12 +48,18 @@ const fetchAuditData = (token) => {
 
 const getMOTOMessage = async (eventEmitter, contractAddress) => {
 
-    const data = await fetchMarketData(contractAddress).catch(() => null);
-    if (!data) {
+    console.log(contractAddress);
+
+    const tData = await fetchTokenData(contractAddress).catch(() => null);
+    console.log(tData);
+    if (!tData) {
         return eventEmitter.emit('error', 'Could not fetch data');
     }
 
-    ee.emit('send-message', `🤖 Analyzing ${data.token_name}...`);
+    eventEmitter.emit('send-message', `🤖 Analyzing ${tData.token_name}...`);
+
+    const data = await fetchMarketData(contractAddress).catch(() => null);
+    console.log(data);
 
     triggerAudit(contractAddress);
 
@@ -133,7 +144,8 @@ bot.onText(/\/audit/, async (msg, match) => {
     }
 
     getMOTOMessage(ee, args[0])
-    .catch(() => {
+    .catch((e) => {
+        console.error(e);
         returnError();
     });
 
@@ -150,10 +162,10 @@ bot.onText(/\/audit/, async (msg, match) => {
     });
 
     ee.on('send-message', async (message) => {
-        await bot.sendMessage(message, {
-            parse_mode: 'Markdown',
-            chat_id: chatId
-        });
+        console.log(message);
+        await bot.sendMessage(chatId, message, {
+            parse_mode: 'Markdown'
+        }).catch((e) => {});
     });
 
    
