@@ -26,6 +26,21 @@ const fetchMarketData = (token) => {
         .then((data) => data.json());
 }
 
+const triggerAudit = (token) => {
+    return fetch(`https://api.miyamotoproject.org/audit/${token}`)
+        .then((data) => data.json());
+}
+
+const fetchAuditStatus = (token) => {
+    return fetch(`https://api.miyamotoproject.org/audit/${token}/status`)
+        .then((data) => data.json());
+}
+
+const fetchAuditData = (token) => {
+    return fetch(`https://api.miyamotoproject.org/audit/${token}/json`)
+        .then((data) => data.json());
+}
+
 const getMOTOMessage = async (eventEmitter, contractAddress) => {
 
     const data = await fetchMarketData(contractAddress).catch(() => null);
@@ -34,6 +49,8 @@ const getMOTOMessage = async (eventEmitter, contractAddress) => {
     }
 
     ee.emit('send-message', `🤖 Analyzing ${data.token_name}...`);
+
+    triggerAudit(contractAddress);
 
     const marketCap = aveta(data.circSupply * data.price_usd, {
         digits: 5
@@ -63,7 +80,7 @@ const getMOTOMessage = async (eventEmitter, contractAddress) => {
         digits: 5
     });
 
-    const message = `  
+    let message = `  
 $${data.token_name} Token Stats
 
 🛒 *Total Supply:* $10bn
@@ -76,6 +93,23 @@ $${data.token_name} Token Stats
 
 app.miyamotoproject.org
 `.trim();
+
+
+    let interval = setInterval(async () => {
+        fetchAuditStatus(contractAddress)
+        .then(async (data) => {
+            if (data.status === 'errored') {
+                eventEmitter.emit('error', data.error);
+                clearInterval(interval);
+            }
+            if (data.status === 'ended') {
+                const data = await fetchAuditData(contractAddress);
+                console.log(data);
+                eventEmitter.emit('send-message', message);
+                clearInterval(interval);
+            }
+        });
+    }, 2000);
 
     return message;
 
@@ -103,8 +137,8 @@ bot.onText(/\/audit/, async (msg, match) => {
         returnError();
     });
 
-    ee.on('error', () => {
-        return void returnError();
+    ee.on('error', (err) => {
+        return void returnError(err);
     });
 
     ee.on('edit-message', async (message) => {
