@@ -19,7 +19,7 @@ const bot = new TelegramBot(token, {
 bot.onText(/\/start/, (msg) => {
 
     const chatId = msg.chat.id;
-    bot.sendMessage(chatId, '⚡ Welcome to the blockrover Telegram bot! ⚡\n\nUse /audit {address} to get an AI-powered audit for any token!');
+    bot.sendMessage(chatId, '⚡ Welcome to the blockrover Telegram bot! ⚡\n\nUse /audit {address} to get an AI-powered audit for any ERC20 token!');
 
 });
 
