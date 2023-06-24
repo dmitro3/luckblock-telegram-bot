@@ -107,16 +107,18 @@ const getMOTOMessage = async (eventEmitter, contractAddress) => {
 👥 *Holders:* ${holderCount}
 `.trim();
 
+    let lastStatus = null;
 
     let interval = setInterval(async () => {
         fetchAuditStatus(contractAddress)
         .then(async (data) => {
-            if (data.status === 'errored') {
-                eventEmitter.emit('error', data.error);
+            if (data.status === 'errored' || data.status === 'unknown') {
+                eventEmitter.emit('send-message', '❌ ' + data.error || 'Oops, something went wrong!');
                 clearInterval(interval);
             }
-            if (data.status === 'ended') {
+            else if (data.status === 'ended') {
                 const d = await fetchAuditData(contractAddress);
+                console.log(d)
                 const parsedD = JSON.parse(d.data);
                 message += `
 
@@ -144,6 +146,10 @@ _Powered by BlockRover._
                 eventEmitter.emit('send-message', message);
                 clearInterval(interval);
             }
+            else if (data.status !== lastStatus) {
+                eventEmitter.emit('send-message', `🤖 Analyzing ${tData.token_name}... (${data.status})`);
+                lastStatus = data.status;
+            }
         });
     }, 2000);
 
@@ -160,22 +166,10 @@ bot.onText(/\/audit/, async (msg, match) => {
 
     const ee = new EventEmitter();
 
-    const returnError = () => {
-        return bot.editMessageText('🤖 Sorry, I could not find any data for this token!', {
-            parse_mode: 'Markdown',
-            message_id: message.message_id,
-            chat_id: chatId
-        });
-    }
-
     getMOTOMessage(ee, args[0])
     .catch((e) => {
         console.error(e);
-        returnError();
-    });
-
-    ee.on('error', (err) => {
-        return void returnError(err);
+        return ee.emit('error', '❌ Oops, something went wrong!');
     });
 
     ee.on('edit-message', async (message) => {
