@@ -54,7 +54,7 @@ const getMOTOMessage = async (eventEmitter, contractAddress) => {
 
     const tData = await fetchTokenData(contractAddress).catch(() => null);
     console.log(tData);
-    if (!tData) {
+    if (!tData || !tData.token_name) {
         return eventEmitter.emit('error', 'Could not fetch data');
     }
 
