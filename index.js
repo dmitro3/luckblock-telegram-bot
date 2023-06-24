@@ -160,9 +160,13 @@ _Powered by BlockRover._
 bot.onText(/\/audit/, async (msg, match) => {
 
     const chatId = msg.chat.id;
-    const message = await bot.sendMessage(chatId, 'Loading... (can take a few minutes)');
-
     const [command, ...args] = match.input.split(' ');
+
+    if (!args[0]) {
+        return bot.sendMessage(chatId, 'Please provide a contract address');
+    }
+
+    const message = await bot.sendMessage(chatId, 'Loading... (can take a few minutes)');
 
     const ee = new EventEmitter();
 
