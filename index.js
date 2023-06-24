@@ -34,7 +34,9 @@ const fetchTokenData = (token) => {
 }
 
 const triggerAudit = (token) => {
-    return fetch(`https://api.miyamotoproject.org/audit/${token}`)
+    return fetch(`https://api.miyamotoproject.org/audit/${token}`, {
+        method: 'POST'
+    })
         .then((data) => data.json());
 }
 
@@ -132,7 +134,7 @@ ${parsedD.issues?.map((issue, i) => {
         'square brackets',
         'angle brackets',
         'angle brackets'
-    ])}\n\n[View recommandation](${process.env.DIFF_VIEWER_URL}#${encoded})`
+    ])}\n\n[View recommendation](${process.env.DIFF_VIEWER_URL}#${encoded})`
 }).join('\n\n')}
 
 [Download PDF](https://api.miyamotoproject.org/audit/${contractAddress}/direct-pdf)
