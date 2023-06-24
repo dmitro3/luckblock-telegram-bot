@@ -8,6 +8,8 @@ import { aveta } from 'aveta';
 
 import { EventEmitter } from 'node:events';
 
+import markdownEscape from 'markdown-escape';
+
 const token = process.env.BOT_TOKEN;
 
 const bot = new TelegramBot(token, {
@@ -92,7 +94,7 @@ const getMOTOMessage = async (eventEmitter, contractAddress) => {
     });
 
     let message = `  
-$${data.token_name} Token Stats
+*$${tData.token_name} Token Stats*
 
 🛒 *Total Supply:* $10bn
 🏦 *Circ. Supply:* $${circSupply}
@@ -101,8 +103,6 @@ $${data.token_name} Token Stats
 📊 *Volume:* $${lastDayVolume}
 🔐 *Liquidity:* $${liquidity}
 👥 *Holders:* ${holderCount}
-
-app.miyamotoproject.org
 `.trim();
 
 
@@ -114,8 +114,31 @@ app.miyamotoproject.org
                 clearInterval(interval);
             }
             if (data.status === 'ended') {
-                const data = await fetchAuditData(contractAddress);
-                console.log(data);
+                const d = await fetchAuditData(contractAddress);
+                const parsedD = JSON.parse(d.data);
+                message += `
+
+*Audit Results:*
+
+${parsedD.issues?.map((issue, i) => {
+    const toEncode = `${contractAddress}/${issue.id}`;
+    const encoded = Buffer.from(toEncode).toString('base64');
+    return `*Issue #${i+1}*\n\n${markdownEscape(issue.issueExplanation, [
+        'number signs',
+        'slashes',
+        'parentheses',
+        'parentheses',
+        'square brackets',
+        'square brackets',
+        'angle brackets',
+        'angle brackets'
+    ])}\n\n[View recommandation](${process.env.DIFF_VIEWER_URL}#${encoded})`
+}).join('\n\n')}
+
+[Download PDF](https://api.miyamotoproject.org/audit/${contractAddress}/direct-pdf)
+
+_Powered by BlockRover._
+                `
                 eventEmitter.emit('send-message', message);
                 clearInterval(interval);
             }
