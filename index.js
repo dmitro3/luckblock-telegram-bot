@@ -107,6 +107,67 @@ const getMOTOMessage = async (eventEmitter, contractAddress) => {
 👥 *Holders:* ${holderCount}
 `.trim();
 
+    const formatData = (name, formattedValue, isPositive) => `*${name}:* ${formattedValue} ${isPositive ? '✅' : '❌'}`;
+
+    const securityProperties = [
+        {'prop': 'is_open_source', 'parse_value': (value) => !!parseInt(value), 'is_positive': (value) => value, 'format_value': (value) => value ? 'Yes' : 'No', 'display_name': 'Open Source'},
+        {'prop': 'is_proxy', 'parse_value': (value) => !!parseInt(value), 'is_positive': (value) => !value, 'format_value': (value) => value ? 'Yes' : 'No', 'display_name': 'Proxy'},
+        {'prop': 'is_mintable', 'parse_value': (value) => !!parseInt(value), 'is_positive': (value) => !value, 'format_value': (value) => value ? 'Yes' : 'No', 'display_name': 'Mintable'},
+        {'prop': 'can_take_back_ownership', 'parse_value': (value) => !!parseInt(value), 'is_positive': (value) => !value, 'format_value': (value) => value ? 'Yes' : 'No', 'display_name': 'Take Back Ownership'},
+        {'prop': 'owner_address', 'parse_value': (value) => !!parseInt(value), 'is_positive': (value) => value, 'format_value': (value) => value || 'Unknown', 'display_name': 'Owner Address'},
+        {'prop': 'owner_change_balance', 'parse_value': (value) => !!parseInt(value), 'is_positive': (value) => !value, 'format_value': (value) => value ? 'Yes' : 'No', 'display_name': 'Owner Change Balance'},
+        {'prop': 'hidden_owner', 'parse_value': (value) => !!parseInt(value), 'is_positive': (value) => !value, 'format_value': (value) => value ? 'Yes' : 'No', 'display_name': 'Hidden Owner'},
+        {'prop': 'selfdestruct', 'parse_value': (value) => !!parseInt(value), 'is_positive': (value) => !value, 'format_value': (value) => value ? 'Yes' : 'No', 'display_name': 'Self-destruct'},
+        {'prop': 'external_call', 'parse_value': (value) => !!parseInt(value), 'is_positive': (value) => !value, 'format_value': (value) => value ? 'Yes' : 'No', 'display_name': 'External Call'},
+    ];
+
+    const goPlusSecurityMessage = securityProperties.map((item) => {
+        const prop = tData[item.prop];
+        const value = item.parse_value(prop);
+        const isPositive = item.is_positive(value);
+        const formattedValue = item.format_value(value);
+        return formatData(item.display_name, formattedValue, isPositive);
+    }).join('\n');
+
+    message += `
+
+*$${tData.token_name} Token Contract Security*
+
+${goPlusSecurityMessage}`;
+
+
+    const tradingSecurityProperties = [
+        {'prop': 'buy_tax', 'parse_value': (value) => parseFloat(value), 'is_positive': (value) => value === 0, 'format_value': (value) => value ? `${value*100}%` : 'Unknown', 'display_name': 'Buy Tax'},
+        {'prop': 'sell_tax', 'parse_value': (value) => parseFloat(value), 'is_positive': (value) => value === 0, 'format_value': (value) => value ? `${value*100}%` : 'Unknown', 'display_name': 'Sell Tax'},
+        {'prop': 'cannot_buy', 'parse_value': (value) => !!parseInt(value), 'is_positive': (value) => !value, 'format_value': (value) => value ? 'Yes' : 'No', 'display_name': 'Cannot be Bought'},
+        {'prop': 'cannot_sell_all', 'parse_value': (value) => !!parseInt(value), 'is_positive': (value) => !value, 'format_value': (value) => value ? 'Yes' : 'No', 'display_name': 'Cannot Sell All'},
+        {'prop': 'slippage_modifiable', 'parse_value': (value) => !!parseInt(value), 'is_positive': (value) => !value, 'format_value': (value) => value ? 'Yes' : 'No', 'display_name': 'Modifiable Tax'},
+        {'prop': 'is_honeypot', 'parse_value': (value) => !!parseInt(value), 'is_positive': (value) => !value, 'format_value': (value) => value ? 'Yes' : 'No', 'display_name': 'Honeypot'},
+        {'prop': 'transfer_pausable', 'parse_value': (value) => !!parseInt(value), 'is_positive': (value) => !value, 'format_value': (value) => value ? 'Yes' : 'No', 'display_name': 'Pausable Transfer'},
+        {'prop': 'is_blacklisted', 'parse_value': (value) => !!parseInt(value), 'is_positive': (value) => !value, 'format_value': (value) => value ? 'Yes' : 'No', 'display_name': 'Blacklist'},
+        {'prop': 'is_whitelisted', 'parse_value': (value) => !!parseInt(value), 'is_positive': (value) => !value, 'format_value': (value) => value ? 'Yes' : 'No', 'display_name': 'Whitelist'},
+        {'prop': 'is_in_dex', 'parse_value': (value) => !!parseInt(value), 'is_positive': (value) => value, 'format_value': (value) => value ? 'Yes' : 'No', 'display_name': 'In main Dex'},
+        {'prop': 'is_anti_whale', 'parse_value': (value) => !!parseInt(value), 'is_positive': (value) => !value, 'format_value': (value) => value ? 'Yes' : 'No', 'display_name': 'Anti Whale'},
+        {'prop': 'anti_whale_modifiable', 'parse_value': (value) => !!parseInt(value), 'is_positive': (value) => !value, 'format_value': (value) => value ? 'Yes' : 'No', 'display_name': 'Modifiable anti whale'},
+        {'prop': 'trading_cooldown', 'parse_value': (value) => !!parseInt(value), 'is_positive': (value) => !value, 'format_value': (value) => value ? 'Yes' : 'No', 'display_name': 'Trading Cooldown'},
+        {'prop': 'personal_slippage_modifiable', 'parse_value': (value) => !!parseInt(value), 'is_positive': (value) => !value, 'format_value': (value) => value ? 'Yes' : 'No', 'display_name': 'Personal Slippage Modifiable'},
+    ];
+
+    const goPlusTradingSecurityMessage = tradingSecurityProperties.map((item) => {
+        const prop = tData[item.prop];
+        const value = item.parse_value(prop);
+        const isPositive = item.is_positive(value);
+        const formattedValue = item.format_value(value);
+        return formatData(item.display_name, formattedValue, isPositive);
+    }).join('\n');
+
+    message += `
+
+*$${tData.token_name} Token Trading Security*
+
+${goPlusTradingSecurityMessage}`;
+
+    
     let lastStatus = null;
 
     let interval = setInterval(async () => {
@@ -122,7 +183,7 @@ const getMOTOMessage = async (eventEmitter, contractAddress) => {
                 const parsedD = JSON.parse(d.data);
                 message += `
 
-*Audit Results:*
+*$${tData.token_name} AI Audit*
 
 ${parsedD.issues?.map((issue, i) => {
     const toEncode = `${contractAddress}/${issue.id}`;
