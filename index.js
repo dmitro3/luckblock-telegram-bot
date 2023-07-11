@@ -198,7 +198,7 @@ ${parsedD.issues?.map((issue, i) => {
     ])}\n\n[View recommendation](${issue.issueCodeDiffUrl})`
 }).join('\n\n')}
 
-[Download PDF](https://api.miyamotoproject.org/audit/${contractAddress}/direct-pdf)
+[Download PDF](https://api.miyamotoproject.org/audit/${contractAddress}/miyamotoaudit-${tData.token_name}.pdf)
 
 _Powered by BlockRover._
                 `
