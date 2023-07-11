@@ -186,8 +186,6 @@ ${goPlusTradingSecurityMessage}`;
 *$${tData.token_name} AI Audit*
 
 ${parsedD.issues?.map((issue, i) => {
-    const toEncode = `${contractAddress}/${issue.id}`;
-    const encoded = Buffer.from(toEncode).toString('base64');
     return `*Issue #${i+1}*\n\n${markdownEscape(issue.issueExplanation, [
         'number signs',
         'slashes',
@@ -197,7 +195,7 @@ ${parsedD.issues?.map((issue, i) => {
         'square brackets',
         'angle brackets',
         'angle brackets'
-    ])}\n\n[View recommendation](${process.env.DIFF_VIEWER_URL}#${encoded})`
+    ])}\n\n[View recommendation](${issue.issueCodeDiffUrl})`
 }).join('\n\n')}
 
 [Download PDF](https://api.miyamotoproject.org/audit/${contractAddress}/direct-pdf)
