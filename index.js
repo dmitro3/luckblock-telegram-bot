@@ -259,3 +259,12 @@ bot.on('message', (msg) => {
 
 
 console.log(`🤖 blockrover bot is started!`);
+
+function cleanUpServer() {
+    console.log(`🤖 blockrover bot is stopped!`);
+    bot.stopPolling();
+}
+
+[`exit`, `SIGINT`, `SIGUSR1`, `SIGUSR2`, `uncaughtException`, `SIGTERM`].forEach((eventType) => {
+    process.on(eventType, cleanUpServer.bind(null, eventType));
+});
