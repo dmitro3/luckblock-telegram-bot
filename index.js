@@ -173,6 +173,7 @@ ${goPlusTradingSecurityMessage}`;
     let interval = setInterval(async () => {
         fetchAuditStatus(contractAddress)
         .then(async (data) => {
+            console.log(data)
             if (data.status === 'errored' || data.status === 'unknown') {
                 eventEmitter.emit('send-message', '❌ ' + data.error || 'Oops, something went wrong!');
                 clearInterval(interval);
