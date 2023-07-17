@@ -187,7 +187,7 @@ ${goPlusTradingSecurityMessage}`;
 *$${tData.token_name} AI Audit*
 
 ${parsedD.issues?.map((issue, i) => {
-    return `*Issue #${i+1}*\n\n${markdownEscape(issue.issueExplanation.length > 200 ? issue.issueExplanation.slice(0, 200) + '...' : issue.issueExplanation, [
+    return `*Issue #${i+1}*\n\n${markdownEscape(issue.issueExplanation.length > 100 ? issue.issueExplanation.slice(0, 100) + '...' : issue.issueExplanation, [
         'number signs',
         'slashes',
         'parentheses',
