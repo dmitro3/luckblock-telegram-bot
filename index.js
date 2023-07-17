@@ -248,7 +248,9 @@ bot.onText(/\/audit/, async (msg, match) => {
         console.log(message);
         await bot.sendMessage(chatId, message, {
             parse_mode: 'Markdown'
-        }).catch((e) => {});
+        }).catch((e) => {
+            console.error(e);
+        });
     });
 
    
