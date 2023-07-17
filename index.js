@@ -34,19 +34,19 @@ const fetchTokenData = (token) => {
 }
 
 const triggerAudit = (token) => {
-    return fetch(`https://api.miyamotoproject.org/audit/${token}`, {
+    return fetch(`https://api.blockrover.io/audit/${token}`, {
         method: 'POST'
     })
         .then((data) => data.json());
 }
 
 const fetchAuditStatus = (token) => {
-    return fetch(`https://api.miyamotoproject.org/audit/${token}/status`)
+    return fetch(`https://api.blockrover.io/audit/${token}/status`)
         .then((data) => data.json());
 }
 
 const fetchAuditData = (token) => {
-    return fetch(`https://api.miyamotoproject.org/audit/${token}/json`)
+    return fetch(`https://api.blockrover.io/audit/${token}/json`)
         .then((data) => data.json());
 }
 
@@ -199,7 +199,7 @@ ${parsedD.issues?.map((issue, i) => {
     ])}\n\n[View recommendation](${issue.issueCodeDiffUrl})`
 }).join('\n\n')}
 
-[Download PDF](https://api.miyamotoproject.org/audit/${contractAddress}/direct-pdf)
+[Download PDF](https://api.blockrover.io/audit/${contractAddress}/direct-pdf)
 
 _Powered by BlockRover._
                 `
