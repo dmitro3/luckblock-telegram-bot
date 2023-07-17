@@ -12,9 +12,7 @@ import markdownEscape from 'markdown-escape';
 
 const token = process.env.BOT_TOKEN;
 
-const bot = new TelegramBot(token, {
-    polling: true
-});
+const bot = new TelegramBot(token);
 
 bot.onText(/\/start/, (msg) => {
 
@@ -266,6 +264,7 @@ console.log(`🤖 blockrover bot is started!`);
 function cleanUpServer() {
     console.log(`🤖 blockrover bot is stopped!`);
     bot.stopPolling();
+    bot.
 }
 
 [`exit`, `SIGINT`, `SIGUSR1`, `SIGUSR2`, `uncaughtException`, `SIGTERM`].forEach((eventType) => {
