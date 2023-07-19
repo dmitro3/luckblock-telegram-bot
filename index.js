@@ -49,6 +49,11 @@ const fetchTokenData = (token) => {
         .then((data) => data.json());
 }
 
+const fetchTokenMarketingWallet = (token) => {
+    return fetch(`https://dapp.herokuapp.com/marketing-wallet?contract=${token}`)
+        .then((data) => data.json());
+}
+
 const triggerAudit = (token) => {
     return fetch(`https://api.blockrover.io/audit/${token}`, {
         method: 'POST'
@@ -80,6 +85,8 @@ const getMOTOMessage = async (eventEmitter, contractAddress) => {
 
     const data = await fetchMarketData(contractAddress).catch(() => null);
     console.log(data);
+
+    const marketingWalletData = await fetchTokenMarketingWallet(contractAddress).catch(() => null);
 
     triggerAudit(contractAddress);
 
@@ -121,6 +128,8 @@ const getMOTOMessage = async (eventEmitter, contractAddress) => {
 📊 *Volume:* $${lastDayVolume}
 🔐 *Liquidity:* $${liquidity}
 👥 *Holders:* ${holderCount}
+#️⃣ *Holder score:* ${tData.holderScore}
+📢 *Marketing Wallet:* ${marketingWalletData?.marketingAddress ? `https://etherscan.io/address/${marketingWalletData?.marketingAddress}` : 'Unknown'}
 `.trim();
 
     const formatData = (name, formattedValue, isPositive) => `*${name}:* ${formattedValue} ${isPositive ? '✅' : '❌'}`;
