@@ -19,7 +19,23 @@ const bot = new TelegramBot(token, {
 bot.onText(/\/start/, (msg) => {
 
     const chatId = msg.chat.id;
-    bot.sendMessage(chatId, '🤖 Welcome to the BlockRover Telegram bot! 🤖\n\nUse /audit {address} to get an AI-powered audit for any ERC20 token!');
+    bot.sendMessage(chatId, '🤖 Welcome to the BlockRover Telegram bot! 🤖\n\nUse /audit {address} to get an AI-powered audit for any ERC20 token!\nUe ');
+
+});
+
+// on /performance or /block0, send coming soon
+
+bot.onText(/\/performance/, (msg) => {
+
+    const chatId = msg.chat.id;
+    bot.sendMessage(chatId, 'Coming soon... 🔒');
+
+});
+
+bot.onText(/\/block0/, (msg) => {
+
+    const chatId = msg.chat.id;
+    bot.sendMessage(chatId, 'Coming soon... 🔒');
 
 });
 
