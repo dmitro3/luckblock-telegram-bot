@@ -19,7 +19,7 @@ const bot = new TelegramBot(token, {
 bot.onText(/\/start/, (msg) => {
 
     const chatId = msg.chat.id;
-    bot.sendMessage(chatId, '🤖 Welcome to the BlockRover Telegram bot! 🤖\n\nUse /audit {address} to get an AI-powered audit for any ERC20 token!\nUe ');
+    bot.sendMessage(chatId, '🤖 Welcome to the BlockRover Telegram bot! 🤖\n\n/audit - Full analysis of any erc20 smart contract.\n\n/performance - Track the PnL of any wallet (limited to uniswap v2 during BETA mode)\n\n/block0 - First one in, first one out. The fastest DeFi trading bot, guaranteed.\n\n/register - Register your wallet for air drops, early sniper access and more.');
 
 });
 
@@ -37,6 +37,18 @@ bot.onText(/\/block0/, (msg) => {
     const chatId = msg.chat.id;
     bot.sendMessage(chatId, 'Coming soon... 🔒');
 
+});
+
+bot.onText(/\/register/, (msg) => {
+
+    const chatId = msg.chat.id;
+    const [command, ...args] = match.input.split(' ');
+
+    if (!args[0]) {
+        return bot.sendMessage(chatId, 'Please provide a contract address (e.g. /register 0x1234...)');
+    }
+
+    bot.sendMessage(chatId, 'Registered Successfully! ✅');
 });
 
 const fetchMarketData = (token) => {
