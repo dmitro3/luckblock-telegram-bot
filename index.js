@@ -42,7 +42,7 @@ bot.onText(/\/block0/, (msg) => {
 bot.onText(/\/register/, (msg) => {
 
     const chatId = msg.chat.id;
-    const [command, ...args] = match.input.split(' ');
+    const [command, ...args] = msg.text.split(' ');
 
     if (!args[0]) {
         return bot.sendMessage(chatId, 'Please provide a contract address (e.g. /register 0x1234...)');
