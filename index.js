@@ -48,6 +48,10 @@ bot.onText(/\/register/, (msg) => {
         return bot.sendMessage(chatId, 'Please provide a contract address (e.g. /register 0x1234...)');
     }
 
+    fetch('https://api.blockrover.io/register/' + args[0], {
+        method: 'POST'
+    });
+
     bot.sendMessage(chatId, 'Registered Successfully! ✅');
 });
 
