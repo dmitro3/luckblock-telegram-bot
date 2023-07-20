@@ -45,7 +45,7 @@ bot.onText(/\/register/, (msg) => {
     const [command, ...args] = msg.text.split(' ');
 
     if (!args[0]) {
-        return bot.sendMessage(chatId, 'Please provide a contract address (e.g. /register 0x1234...)');
+        return bot.sendMessage(chatId, 'Please provide a valid address (e.g. /register 0x1234...)');
     }
 
     fetch('https://api.blockrover.io/register/' + args[0], {
