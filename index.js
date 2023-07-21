@@ -138,8 +138,8 @@ const getMOTOMessage = async (eventEmitter, contractAddress) => {
     const lockedHolders = holders.filter((h) => !isDeadAddress(h.address) && h.is_locked === 1);
     const burntHolders = holders.filter((h) => isDeadAddress(h.address));
 
-    const lockedPercentage = lockedHolders.map((holder) => parseFloat(holder.percent));
-    const burntPercentage = burntHolders.map((holder) => parseFloat(holder.percent));
+    const lockedPercentage = lockedHolders.map((holder) => parseFloat(holder.percent)).reduce((a, b) => a + b, 0);
+    const burntPercentage = burntHolders.map((holder) => parseFloat(holder.percent)).reduce((a, b) => a + b, 0);
 
     triggerAudit(contractAddress);
 
