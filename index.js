@@ -87,6 +87,11 @@ const fetchAuditData = (token) => {
         .then((data) => data.json());
 }
 
+const fetchTransactionData = (token) => {
+    return fetch(`https://dapp.herokuapp.com/transaction-data?contract=${token}`)
+        .then((data) => data.json());
+}
+
 const getMOTOMessage = async (eventEmitter, contractAddress) => {
 
     console.log(contractAddress);
@@ -103,6 +108,38 @@ const getMOTOMessage = async (eventEmitter, contractAddress) => {
     console.log(data);
 
     const marketingWalletData = await fetchTokenMarketingWallet(contractAddress).catch(() => null);
+
+    const transactionData = await fetchTransactionData(contractAddress).catch(() => null);
+
+    function getTokensInfos(transaction) {
+        const primarySide = transaction.side.toLowerCase();
+        const secondarySide = primarySide === "buy" ? "sell" : "buy";
+        return {
+            primary: {
+                symbol: transaction[`${primarySide}Currency`].symbol.toLowerCase(),
+                address: transaction[`${primarySide}Currency`].address
+            },
+            secondary: {
+                symbol: transaction[`${secondarySide}Currency`].symbol.toLowerCase(),
+                address: transaction[`${secondarySide}Currency`].address
+            }
+        }
+    }
+
+    let tokensInfos = null;
+    if (transactionData.data?.txHistory.dexTrades[0]) {
+        tokensInfos = getTokensInfos(transactionData.data?.txHistory.dexTrades[0]);
+    }
+
+    const holders = tData.lp_holders;
+
+    const isDeadAddress = (address) => address.startsWith("0x0000") || address.endsWith("dead");
+
+    const lockedHolders = holders.filter((h) => !isDeadAddress(h.address) && h.is_locked === 1);
+    const burntHolders = holders.filter((h) => isDeadAddress(h.address));
+
+    const lockedPercentage = lockedHolders.map((holder) => parseFloat(holder.percent));
+    const burntPercentage = burntHolders.map((holder) => parseFloat(holder.percent));
 
     triggerAudit(contractAddress);
 
@@ -146,6 +183,8 @@ const getMOTOMessage = async (eventEmitter, contractAddress) => {
 👥 *Holders:* ${holderCount}
 #️⃣ *Holder score:* ${tData.holderScore}
 📢 *Marketing Wallet:* ${marketingWalletData?.marketingAddress ? `https://etherscan.io/address/${marketingWalletData?.marketingAddress}` : 'Unknown'}
+💵 *Liquidity*: ${liquidity} (${Math.round(lockedPercentage * 100)}% locked, ${Math.round(burntPercentage * 100)}% burnt)
+🔗 *Pair address*: ${tokensInfos?.secondary?.address ? `[${tokensInfos?.secondary?.address}](https://etherscan.io/address/${tokensInfos?.secondary?.address})` : 'Unknown'}
 `.trim();
 
     const formatData = (name, formattedValue, isPositive) => `*${name}:* ${formattedValue} ${isPositive ? '✅' : '❌'}`;
