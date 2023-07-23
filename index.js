@@ -119,7 +119,7 @@ bot.onText(/\/audit/, async (msg, match) => {
         });
 
         ee.on('error', (error) => {
-            const newStatisticsWithoutAudit = statisticsMessage.replace(WAITING_GENERATION_AUDIT_MESSAGE, `[Use our website](https://app.blockrover.io/audit) to generate the audit report.`);
+            const newStatisticsWithoutAudit = statisticsMessage.replace(WAITING_GENERATION_AUDIT_MESSAGE, `[Use our web app](https://app.blockrover.io/audit) to generate the audit report.`);
             bot.editMessageText(`❌ Oops, something went wrong! (${error})`, {
                 parse_mode: 'Markdown',
                 message_id: auditGenerationMessage.message_id,
