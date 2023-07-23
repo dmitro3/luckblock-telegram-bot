@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "preinstall": "echo \"//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}\" > .yarnrc && echo \"@blockrover:registry=https://npm.pkg.github.com\" >> .yarnrc"
   },
   "keywords": [],
   "author": "",
