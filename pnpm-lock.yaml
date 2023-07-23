@@ -11,6 +11,9 @@ dependencies:
   dotenv:
     specifier: ^16.3.1
     version: 16.3.1
+  goplus-ai-analyzer-js:
+    specifier: github:blockrover/goplus-ai-analyzer-js
+    version: github.com/blockrover/goplus-ai-analyzer-js/ee538160e0f974abcbc4dfff8e80cf1527d6848f
   markdown-escape:
     specifier: ^2.0.0
     version: 2.0.0
@@ -1021,4 +1024,10 @@ packages:
       string-width: 4.2.3
       y18n: 5.0.8
       yargs-parser: 21.1.1
+    dev: false
+
+  github.com/blockrover/goplus-ai-analyzer-js/ee538160e0f974abcbc4dfff8e80cf1527d6848f:
+    resolution: {commit: ee538160e0f974abcbc4dfff8e80cf1527d6848f, repo: git+ssh://git@github.com/blockrover/goplus-ai-analyzer-js.git, type: git}
+    name: goplus-ai-analyzer-js
+    version: 1.0.0
     dev: false
