@@ -12,9 +12,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@blockrover/goplus-ai-analyzer-js": "1.0.1",
     "aveta": "^1.3.0",
     "dotenv": "^16.3.1",
-    "goplus-ai-analyzer-js": "git+https://github.com/blockrover/goplus-ai-analyzer-js.git",
     "markdown-escape": "^2.0.0",
     "node-fetch": "^3.3.1",
     "node-telegram-bot-api": "^0.61.0"
