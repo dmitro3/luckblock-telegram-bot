@@ -84,7 +84,8 @@ bot.onText(/\/audit/, async (msg, match) => {
     await bot.editMessageText(statisticsMessage, {
         parse_mode: 'Markdown',
         message_id: message.message_id,
-        chat_id: chatId
+        chat_id: chatId,
+        disable_web_page_preview: true
     });
 
     if (!initialAuditIsReady) {
@@ -101,7 +102,8 @@ bot.onText(/\/audit/, async (msg, match) => {
             bot.editMessageText(`🔍 (audit generation AI): ${status}`, {
                 parse_mode: 'Markdown',
                 message_id: auditGenerationMessage.message_id,
-                chat_id: chatId
+                chat_id: chatId,
+                disable_web_page_preview: true
             });
         });
 
@@ -111,7 +113,8 @@ bot.onText(/\/audit/, async (msg, match) => {
             bot.editMessageText(auditStatisticsMessage, {
                 parse_mode: 'Markdown',
                 message_id: message.message_id,
-                chat_id: chatId
+                chat_id: chatId,
+                disable_web_page_preview: true
             });
         });
 
@@ -120,12 +123,14 @@ bot.onText(/\/audit/, async (msg, match) => {
             bot.editMessageText(`❌ Oops, something went wrong! (${error})`, {
                 parse_mode: 'Markdown',
                 message_id: auditGenerationMessage.message_id,
-                chat_id: chatId
+                chat_id: chatId,
+                disable_web_page_preview: true
             });
             bot.editMessageText(newStatisticsWithoutAudit, {
                 parse_mode: 'Markdown',
                 message_id: message.message_id,
-                chat_id: chatId
+                chat_id: chatId,
+                disable_web_page_preview: true
             });
         });
 
