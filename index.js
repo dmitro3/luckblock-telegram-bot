@@ -5,7 +5,7 @@ import fetch from 'node-fetch';
 import TelegramBot from 'node-telegram-bot-api';
 
 import { EventEmitter } from 'node:events';
-import { fetchAuditData, fetchTokenStatistics, formatTokenStatistics, triggerAudit, waitForAuditEndOrError } from 'goplus-ai-analyzer-js';
+import { fetchAuditData, fetchTokenStatistics, formatTokenStatistics, triggerAudit, waitForAuditEndOrError } from '@blockrover/goplus-ai-analyzer-js';
 
 const token = process.env.BOT_TOKEN;
 
