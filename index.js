@@ -5,7 +5,7 @@ import fetch from 'node-fetch';
 import TelegramBot from 'node-telegram-bot-api';
 
 import { EventEmitter } from 'node:events';
-import { fetchAuditData, fetchTokenStatistics, formatTokenStatistics, triggerAudit, waitForAuditEndOrError } from '@blockrover/goplus-ai-analyzer-js';
+import { fetchAuditData, fetchTokenStatistics, formatTokenStatistics, triggerAudit, waitForAuditEndOrError, WAITING_GENERATION_AUDIT_MESSAGE } from '@blockrover/goplus-ai-analyzer-js';
 
 const token = process.env.BOT_TOKEN;
 
@@ -116,9 +116,15 @@ bot.onText(/\/audit/, async (msg, match) => {
         });
 
         ee.on('error', (error) => {
+            const newStatisticsWithoutAudit = statisticsMessage.replace(WAITING_GENERATION_AUDIT_MESSAGE, `[Use our website](https://blockrover.io) to generate the audit report.`);
             bot.editMessageText(`❌ Oops, something went wrong! (${error})`, {
                 parse_mode: 'Markdown',
                 message_id: auditGenerationMessage.message_id,
+                chat_id: chatId
+            });
+            bot.editMessageText(newStatisticsWithoutAudit, {
+                parse_mode: 'Markdown',
+                message_id: message.message_id,
                 chat_id: chatId
             });
         });
