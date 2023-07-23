@@ -72,7 +72,6 @@ bot.onText(/\/audit/, async (msg, match) => {
 
     if (!statistics) {
         return bot.editMessageText('❌ Oops, something went wrong!', {
-            parse_mode: 'Markdown',
             message_id: message.message_id,
             chat_id: chatId
         });
@@ -82,7 +81,7 @@ bot.onText(/\/audit/, async (msg, match) => {
     const statisticsMessage = formatTokenStatistics(statistics, true, initialAuditIsReady ? JSON.parse(initialAuditData?.data) : null);
 
     await bot.editMessageText(statisticsMessage, {
-        parse_mode: 'Markdown',
+        parse_mode: 'MarkdownV2',
         message_id: message.message_id,
         chat_id: chatId,
         disable_web_page_preview: true
@@ -96,11 +95,10 @@ bot.onText(/\/audit/, async (msg, match) => {
         // subscribe to audit changes
         waitForAuditEndOrError(contractAddress, ee);
 
-        const auditGenerationMessage = await bot.sendMessage(chatId, `🔍 (audit generation AI) : starting...`);;
+        const auditGenerationMessage = await bot.sendMessage(chatId, `🔍 (audit generation AI) : starting...`);
 
         ee.on('status-update', (status) => {
             bot.editMessageText(`🔍 (audit generation AI): ${status}`, {
-                parse_mode: 'Markdown',
                 message_id: auditGenerationMessage.message_id,
                 chat_id: chatId,
                 disable_web_page_preview: true
@@ -110,8 +108,9 @@ bot.onText(/\/audit/, async (msg, match) => {
         ee.on('end', (audit) => {
             const auditStatisticsMessage = formatTokenStatistics(statistics, true, audit);
             bot.deleteMessage(auditGenerationMessage.chat.id, auditGenerationMessage.message_id);
+
             bot.editMessageText(auditStatisticsMessage, {
-                parse_mode: 'Markdown',
+                parse_mode: 'MarkdownV2',
                 message_id: message.message_id,
                 chat_id: chatId,
                 disable_web_page_preview: true
@@ -121,13 +120,12 @@ bot.onText(/\/audit/, async (msg, match) => {
         ee.on('error', (error) => {
             const newStatisticsWithoutAudit = statisticsMessage.replace(WAITING_GENERATION_AUDIT_MESSAGE, `[Use our web app](https://app.blockrover.io/audit) to generate the audit report.`);
             bot.editMessageText(`❌ Oops, something went wrong! (${error})`, {
-                parse_mode: 'Markdown',
                 message_id: auditGenerationMessage.message_id,
                 chat_id: chatId,
                 disable_web_page_preview: true
             });
             bot.editMessageText(newStatisticsWithoutAudit, {
-                parse_mode: 'Markdown',
+                parse_mode: 'MarkdownV2',
                 message_id: message.message_id,
                 chat_id: chatId,
                 disable_web_page_preview: true
