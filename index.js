@@ -5,7 +5,7 @@ import fetch from 'node-fetch';
 import TelegramBot from 'node-telegram-bot-api';
 
 import { EventEmitter } from 'node:events';
-import { fetchAuditData, fetchTokenStatistics, formatTokenStatistics, triggerAudit, waitForAuditEndOrError, WAITING_GENERATION_AUDIT_MESSAGE } from '@blockrover/goplus-ai-analyzer-js';
+import { fetchAuditData, fetchTokenStatistics, formatTokenStatistics, triggerAudit, waitForAuditEndOrError, WAITING_GENERATION_AUDIT_MESSAGE } from '@luckblock/goplus-ai-analyzer-js';
 
 const token = process.env.BOT_TOKEN;
 
@@ -16,7 +16,7 @@ const bot = new TelegramBot(token, {
 bot.onText(/\/start/, (msg) => {
 
     const chatId = msg.chat.id;
-    bot.sendMessage(chatId, '🤖 Welcome to the BlockRover Telegram bot! 🤖\n\n/audit - Full analysis of any erc20 smart contract.\n\n/performance - Track the PnL of any wallet (limited to uniswap v2 during BETA mode)\n\n/block0 - First one in, first one out. The fastest DeFi trading bot, guaranteed.\n\n/register - Register your wallet for air drops, early sniper access and more.');
+    bot.sendMessage(chatId, '🤖 Welcome to the LuckBlock Telegram bot! 🤖\n\n/audit - Full analysis of any erc20 smart contract.\n\n/performance - Track the PnL of any wallet (limited to uniswap v2 during BETA mode)\n\n/block0 - First one in, first one out. The fastest DeFi trading bot, guaranteed.\n\n/register - Register your wallet for air drops, early sniper access and more.');
 
 });
 
@@ -45,7 +45,7 @@ bot.onText(/\/register/, (msg) => {
         return bot.sendMessage(chatId, 'Please provide a valid address (e.g. /register 0x1234...)');
     }
 
-    fetch('https://api.blockrover.io/register/' + args[0], {
+    fetch('https://api.luckblock.io/register/' + args[0], {
         method: 'POST'
     });
 
@@ -118,7 +118,7 @@ bot.onText(/\/audit/, async (msg, match) => {
         });
 
         ee.on('error', (error) => {
-            const newStatisticsWithoutAudit = statisticsMessage.replace(WAITING_GENERATION_AUDIT_MESSAGE, `[Use our web app](https://app.blockrover.io/audit) to generate the audit report.`);
+            const newStatisticsWithoutAudit = statisticsMessage.replace(WAITING_GENERATION_AUDIT_MESSAGE, `[Use our web app](https://app.luckblock.io/audit) to generate the audit report.`);
             bot.editMessageText(`❌ Oops, something went wrong! (${error})`, {
                 message_id: auditGenerationMessage.message_id,
                 chat_id: chatId,
@@ -136,10 +136,10 @@ bot.onText(/\/audit/, async (msg, match) => {
    
 });
 
-console.log(`🤖 blockrover bot is started!`);
+console.log(`🤖 luckblock bot is started!`);
 
 function cleanUpServer() {
-    console.log(`🤖 blockrover bot is stopped!`);
+    console.log(`🤖 luckblock bot is stopped!`);
     bot.stopPolling({ cancel: true });
     process.exit();
 }
